@@ -3,7 +3,7 @@
 import { useEffect, useMemo } from "react";
 import type { Dish, TargetLanguage } from "@/lib/types";
 import { STRINGS } from "@/lib/i18n";
-import { buildBroadcastScript, type OrderLine } from "@/lib/order";
+import { buildBroadcastScript, computeOrderTotal, cnyToUsd, type OrderLine } from "@/lib/order";
 
 interface Props {
   language: TargetLanguage;
@@ -36,6 +36,7 @@ export default function BroadcastPanel({
   );
 
   const script = useMemo(() => buildBroadcastScript(lines), [lines]);
+  const total = useMemo(() => computeOrderTotal(lines), [lines]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -84,6 +85,25 @@ export default function BroadcastPanel({
                 </li>
               ))}
             </ul>
+
+            {total.hasPrice && (
+              <div className="order-total" role="status" aria-live="polite">
+                <div className="order-total-row">
+                  <span className="order-total-label">{t.orderTotal}</span>
+                  <span className="order-total-amounts">
+                    <span className="order-total-amount">
+                      {total.complete ? "" : "≈ "}¥{total.amount.toLocaleString()}
+                    </span>
+                    <span className="order-total-usd">
+                      ≈ ${cnyToUsd(total.amount).toLocaleString(undefined, {
+                        maximumFractionDigits: 0,
+                      })}
+                    </span>
+                  </span>
+                </div>
+                <p className="order-total-note">{t.orderTotalNote}</p>
+              </div>
+            )}
 
             <div className="script">
               <div className="label">{t.scriptLabel}</div>

@@ -974,6 +974,74 @@ a {
   font-weight: 700;
 }
 
+.order-total {
+  margin-top: 16px;
+  background: var(--vermilion);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  box-shadow: 0 8px 24px rgba(193, 58, 39, 0.28);
+}
+
+.order-total-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.order-total-label {
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 700;
+  opacity: 0.92;
+}
+
+.order-total-amounts {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  text-align: right;
+  min-width: 0;
+}
+
+.order-total-amount {
+  font-family: var(--font-han);
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+}
+
+.order-total-usd {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  opacity: 0.85;
+}
+
+.order-total-note {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  opacity: 0.85;
+}
+
+@media (max-width: 380px) {
+  .order-total-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+  }
+  .order-total-amount {
+    font-size: 24px;
+  }
+  .order-total-usd {
+    font-size: 13px;
+  }
+}
+
 .script {
   margin-top: 18px;
   background: var(--card);
