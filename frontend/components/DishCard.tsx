@@ -41,11 +41,13 @@ function CheckIcon() {
   );
 }
 
-function CameraIcon() {
+function ImageIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M4 8.5h3l1.4-2h7.2L17 8.5h3a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1Z" />
-      <circle cx="12" cy="13" r="3.2" />
+      <rect x="3" y="4" width="18" height="16" rx="2" />
+      <circle cx="8.5" cy="9" r="1.8" />
+      <path d="M4 17l4.5-4.5a1.5 1.5 0 0 1 2.1 0L16 18" />
+      <path d="M14 15l1.8-1.8a1.5 1.5 0 0 1 2.1 0L21 16" />
     </svg>
   );
 }
@@ -166,7 +168,7 @@ export default function DishCard({
               aria-label={t.showPhoto}
               title={t.showPhoto}
             >
-              <CameraIcon />
+              <ImageIcon />
             </button>
           )}
         </div>
