@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "EatsBuddy · 菜单拍照翻译点餐助手",
+  title: "EatsBuddy · 菜单拍照翻译点餐Agent",
   description:
     "2026 APEC Shenzhen — snap a Chinese menu, get instant translation, ingredients, allergen alerts, recommendations and culture notes, then broadcast your order to the waiter in Chinese.",
 };
