@@ -1,6 +1,6 @@
 "use client";
 
-import type { DietaryTag, Dish, TargetLanguage } from "@/lib/types";
+import type { DietaryTag, Dish, DishImageState, TargetLanguage } from "@/lib/types";
 import { STRINGS } from "@/lib/i18n";
 
 interface Props {
@@ -10,8 +10,11 @@ interface Props {
   selected: boolean;
   conflicts: DietaryTag[];
   speaking: boolean;
+  imageEnabled: boolean;
+  image?: DishImageState;
   onToggleSelect: () => void;
   onSpeak: () => void;
+  onLoadImage: () => void;
 }
 
 function SpeakerIcon({ on }: { on: boolean }) {
@@ -38,6 +41,15 @@ function CheckIcon() {
   );
 }
 
+function CameraIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M4 8.5h3l1.4-2h7.2L17 8.5h3a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1Z" />
+      <circle cx="12" cy="13" r="3.2" />
+    </svg>
+  );
+}
+
 export default function DishCard({
   dish,
   language,
@@ -45,11 +57,15 @@ export default function DishCard({
   selected,
   conflicts,
   speaking,
+  imageEnabled,
+  image,
   onToggleSelect,
   onSpeak,
+  onLoadImage,
 }: Props) {
   const t = STRINGS[language];
   const hasConflict = conflicts.length > 0;
+  const photoStatus = image?.status;
 
   return (
     <article
@@ -57,6 +73,27 @@ export default function DishCard({
       style={{ animationDelay: `${Math.min(index * 55, 600)}ms` }}
     >
       {dish.recommended && <span className="recommend-flag">★ {t.recommended}</span>}
+
+      {imageEnabled && photoStatus && (
+        <div className="dish-photo">
+          {photoStatus === "done" && image?.url ? (
+            <>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={image.url} alt={dish.translatedName || dish.originalName} />
+              <span className="photo-note">{t.photoNote}</span>
+            </>
+          ) : photoStatus === "loading" ? (
+            <div className="photo-state">
+              <span className="photo-spinner" aria-hidden />
+              {t.loadingPhoto}
+            </div>
+          ) : (
+            <button type="button" className="photo-state photo-retry" onClick={onLoadImage}>
+              {t.photoError}
+            </button>
+          )}
+        </div>
+      )}
 
       <div className="dish-top">
         <div>
@@ -111,15 +148,28 @@ export default function DishCard({
       )}
 
       <div className="dish-foot">
-        <button
-          type="button"
-          className={`icon-btn${speaking ? " speaking" : ""}`}
-          onClick={onSpeak}
-          aria-label={t.speak}
-          title={t.speak}
-        >
-          <SpeakerIcon on={speaking} />
-        </button>
+        <div className="foot-icons">
+          <button
+            type="button"
+            className={`icon-btn${speaking ? " speaking" : ""}`}
+            onClick={onSpeak}
+            aria-label={t.speak}
+            title={t.speak}
+          >
+            <SpeakerIcon on={speaking} />
+          </button>
+          {imageEnabled && !photoStatus && (
+            <button
+              type="button"
+              className="icon-btn"
+              onClick={onLoadImage}
+              aria-label={t.showPhoto}
+              title={t.showPhoto}
+            >
+              <CameraIcon />
+            </button>
+          )}
+        </div>
         <button
           type="button"
           className={`add-toggle${selected ? " on" : ""}`}

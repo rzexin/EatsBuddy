@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type {
   AnalyzeResult,
   DietaryTag,
   Dish,
+  DishImageState,
   TargetLanguage,
 } from "@/lib/types";
 import { STRINGS } from "@/lib/i18n";
@@ -31,9 +32,63 @@ export default function Home() {
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [showOrder, setShowOrder] = useState(false);
 
+  const [imageEnabled, setImageEnabled] = useState(false);
+  const [dishImages, setDishImages] = useState<Record<string, DishImageState>>({});
+
   const { supported: speechSupported, speakingId, speak, stop } = useSpeech();
 
   const t = STRINGS[language];
+
+  // Probe whether server-side dish-photo generation is configured.
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/dish-image")
+      .then((res) => (res.ok ? res.json() : { enabled: false }))
+      .then((data) => {
+        if (!cancelled) setImageEnabled(Boolean(data?.enabled));
+      })
+      .catch(() => {
+        if (!cancelled) setImageEnabled(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const loadDishImage = useCallback(
+    async (dish: Dish) => {
+      setDishImages((prev) => {
+        if (prev[dish.id]?.status === "loading" || prev[dish.id]?.status === "done") {
+          return prev;
+        }
+        return { ...prev, [dish.id]: { status: "loading" } };
+      });
+      try {
+        const res = await fetch("/api/dish-image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            originalName: dish.originalName,
+            translatedName: dish.translatedName,
+            ingredients: dish.ingredients,
+            description: dish.description,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok || !data?.image) {
+          setDishImages((prev) => ({ ...prev, [dish.id]: { status: "error" } }));
+          return;
+        }
+        setDishImages((prev) => ({
+          ...prev,
+          [dish.id]: { status: "done", url: data.image as string },
+        }));
+      } catch {
+        setDishImages((prev) => ({ ...prev, [dish.id]: { status: "error" } }));
+      }
+    },
+    [],
+  );
 
   const toggleDietary = (tag: DietaryTag) =>
     setDietary((prev) =>
@@ -63,6 +118,7 @@ export default function Home() {
     setResult(null);
     setSelectedIds([]);
     setQuantities({});
+    setDishImages({});
     try {
       const res = await fetch("/api/analyze", {
         method: "POST",
@@ -212,12 +268,15 @@ export default function Home() {
                   selected={selectedIds.includes(dish.id)}
                   conflicts={dishConflicts(dish, dietary)}
                   speaking={speakingId === dish.id}
+                  imageEnabled={imageEnabled}
+                  image={dishImages[dish.id]}
                   onToggleSelect={() => toggleSelect(dish.id)}
                   onSpeak={() =>
                     speakingId === dish.id
                       ? stop()
                       : speak(dish.originalName, dish.id, "zh-CN")
                   }
+                  onLoadImage={() => loadDishImage(dish)}
                 />
               ))}
             </div>

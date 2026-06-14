@@ -24,6 +24,10 @@ interface Strings {
   ingredients: string;
   cultureNote: string;
   speak: string;
+  showPhoto: string;
+  loadingPhoto: string;
+  photoError: string;
+  photoNote: string;
   add: string;
   added: string;
   conflict: string;
@@ -70,6 +74,10 @@ export const STRINGS: Record<TargetLanguage, Strings> = {
     ingredients: "Ingredients",
     cultureNote: "Culture note",
     speak: "Hear the name",
+    showPhoto: "See a photo",
+    loadingPhoto: "Generating photo…",
+    photoError: "Couldn't generate a photo. Tap to retry.",
+    photoNote: "AI illustration — the actual dish may differ.",
     add: "Add",
     added: "Added",
     conflict: "Heads up",
@@ -126,6 +134,10 @@ export const STRINGS: Record<TargetLanguage, Strings> = {
     ingredients: "食材",
     cultureNote: "食文化メモ",
     speak: "名前を聞く",
+    showPhoto: "写真を見る",
+    loadingPhoto: "写真を生成中…",
+    photoError: "写真を生成できませんでした。タップで再試行。",
+    photoNote: "AIによるイメージ画像です。実際の料理とは異なる場合があります。",
     add: "追加",
     added: "追加済み",
     conflict: "注意",

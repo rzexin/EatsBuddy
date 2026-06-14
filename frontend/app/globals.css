@@ -530,6 +530,64 @@ a {
   background: linear-gradient(180deg, #fff4ef, var(--card));
 }
 
+.dish-photo {
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--paper-deep);
+  animation: rise 0.4s cubic-bezier(0.2, 0.7, 0.3, 1) backwards;
+}
+
+.dish-photo img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.dish-photo .photo-note {
+  display: block;
+  padding: 6px 10px;
+  font-size: 11px;
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+.photo-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  font-size: 13px;
+  color: var(--ink-soft);
+  text-align: center;
+  padding: 12px;
+}
+
+.photo-retry {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--vermilion-deep);
+}
+
+.photo-spinner {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2.5px solid var(--line-strong);
+  border-top-color: var(--vermilion);
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @keyframes rise {
   from {
     opacity: 0;
@@ -678,6 +736,12 @@ a {
   align-items: center;
   gap: 10px;
   padding-top: 8px;
+}
+
+.foot-icons {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .icon-btn {

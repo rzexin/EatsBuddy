@@ -47,6 +47,13 @@ export interface AnalyzeResult {
   dishes: Dish[];
 }
 
+/** Per-dish on-demand photo generation state, keyed by dish id in the UI. */
+export interface DishImageState {
+  status: "loading" | "done" | "error";
+  /** Data URL (or remote URL) of the generated photo when status is "done". */
+  url?: string;
+}
+
 export interface AnalyzeRequestBody {
   image: string; // data URL (base64)
   language: TargetLanguage;

@@ -56,3 +56,30 @@ export function buildUserPrompt(language: TargetLanguage): string {
   const target = LANGUAGE_LABEL[language];
   return `Here is the menu photo. Extract the dishes and respond in ${target} as strict JSON.`;
 }
+
+/**
+ * Prompt for the text-to-image model. Produces a realistic, appetizing photo of
+ * a single Chinese dish. Kept under ~512 characters to satisfy provider limits.
+ */
+export function buildDishImagePrompt(dish: {
+  originalName: string;
+  translatedName: string;
+  ingredients: string[];
+  description: string;
+}): string {
+  const name = [dish.translatedName, dish.originalName]
+    .filter(Boolean)
+    .join(" / ");
+  const ingredients = dish.ingredients.slice(0, 5).join(", ");
+
+  const parts = [
+    `A professional, realistic food photograph of the Chinese dish "${name}".`,
+    ingredients ? `Key ingredients: ${ingredients}.` : "",
+    dish.description ? `Dish: ${dish.description}` : "",
+    "Authentic Chinese restaurant presentation, plated on tableware, served on a table.",
+    "Appetizing, fresh, natural soft lighting, shallow depth of field, 45-degree angle, high detail.",
+    "No text, no watermark, no logo, no people, no hands.",
+  ].filter(Boolean);
+
+  return parts.join(" ").slice(0, 500);
+}
