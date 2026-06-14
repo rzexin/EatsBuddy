@@ -1,28 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Hanken_Grotesk, Noto_Serif_SC } from "next/font/google";
 import "./globals.css";
-
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "900"],
-  style: ["normal", "italic"],
-  variable: "--font-display",
-  display: "swap",
-});
-
-const hanken = Hanken_Grotesk({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-body",
-  display: "swap",
-});
-
-const notoSerifSc = Noto_Serif_SC({
-  subsets: ["latin"],
-  weight: ["500", "700"],
-  variable: "--font-han",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "EatsBuddy · 菜单拍照翻译点餐助手",
@@ -41,11 +18,19 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body
-        className={`${fraunces.variable} ${hanken.variable} ${notoSerifSc.variable}`}
-      >
-        {children}
-      </body>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,500;1,600;1,700;1,900&family=Hanken+Grotesk:wght@400;500;600;700&family=Noto+Serif+SC:wght@500;700&display=swap"
+        />
+      </head>
+      <body>{children}</body>
     </html>
   );
 }
