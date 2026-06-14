@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import type { TargetLanguage } from "@/lib/types";
 import { STRINGS } from "@/lib/i18n";
+import { compressImage } from "@/lib/image";
 
 interface Props {
   language: TargetLanguage;
@@ -20,21 +21,23 @@ function CameraIcon() {
   );
 }
 
-function readFile(file: File, cb: (url: string) => void) {
-  const reader = new FileReader();
-  reader.onload = () => cb(String(reader.result));
-  reader.readAsDataURL(file);
-}
-
 export default function ImageUploader({ language, preview, onSelect, onClear }: Props) {
   const t = STRINGS[language];
   const cameraRef = useRef<HTMLInputElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const [drag, setDrag] = useState(false);
+  const [processing, setProcessing] = useState(false);
 
-  const handleFiles = (files: FileList | null) => {
+  const handleFiles = async (files: FileList | null) => {
     const file = files?.[0];
-    if (file && file.type.startsWith("image/")) readFile(file, onSelect);
+    if (!file || !file.type.startsWith("image/")) return;
+    setProcessing(true);
+    try {
+      const dataUrl = await compressImage(file);
+      onSelect(dataUrl);
+    } finally {
+      setProcessing(false);
+    }
   };
 
   if (preview) {
@@ -56,28 +59,38 @@ export default function ImageUploader({ language, preview, onSelect, onClear }: 
 
   return (
     <div
-      className={`dropzone${drag ? " is-drag" : ""}`}
+      className={`dropzone${drag ? " is-drag" : ""}${processing ? " is-busy" : ""}`}
       onDragOver={(e) => {
         e.preventDefault();
-        setDrag(true);
+        if (!processing) setDrag(true);
       }}
       onDragLeave={() => setDrag(false)}
       onDrop={(e) => {
         e.preventDefault();
         setDrag(false);
-        handleFiles(e.dataTransfer.files);
+        if (!processing) void handleFiles(e.dataTransfer.files);
       }}
     >
       <div className="dropzone-icon">
         <CameraIcon />
       </div>
       <h3>{t.dropTitle}</h3>
-      <p>{t.dropHint}</p>
+      <p>{processing ? t.compressing : t.dropHint}</p>
       <div className="dropzone-actions">
-        <button type="button" className="btn btn-primary" onClick={() => cameraRef.current?.click()}>
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={() => cameraRef.current?.click()}
+          disabled={processing}
+        >
           <CameraIcon /> {t.takePhoto}
         </button>
-        <button type="button" className="btn btn-ghost" onClick={() => fileRef.current?.click()}>
+        <button
+          type="button"
+          className="btn btn-ghost"
+          onClick={() => fileRef.current?.click()}
+          disabled={processing}
+        >
           {t.chooseImage}
         </button>
       </div>
@@ -88,14 +101,14 @@ export default function ImageUploader({ language, preview, onSelect, onClear }: 
         accept="image/*"
         capture="environment"
         className="visually-hidden"
-        onChange={(e) => handleFiles(e.target.files)}
+        onChange={(e) => void handleFiles(e.target.files)}
       />
       <input
         ref={fileRef}
         type="file"
         accept="image/*"
         className="visually-hidden"
-        onChange={(e) => handleFiles(e.target.files)}
+        onChange={(e) => void handleFiles(e.target.files)}
       />
     </div>
   );

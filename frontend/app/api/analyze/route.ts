@@ -8,7 +8,8 @@ import type {
 } from "@/lib/types";
 
 export const runtime = "nodejs";
-export const maxDuration = 60;
+// Vercel function timeout (seconds). Hobby plan caps at 60s; Pro plan allows up to 300s.
+export const maxDuration = 300;
 
 function isLanguage(value: unknown): value is TargetLanguage {
   return value === "en" || value === "ja";

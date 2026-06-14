@@ -10,6 +10,7 @@ interface Strings {
   dropHint: string;
   takePhoto: string;
   chooseImage: string;
+  compressing: string;
   retake: string;
   translate: string;
   langLabel: string;
@@ -55,6 +56,7 @@ export const STRINGS: Record<TargetLanguage, Strings> = {
     dropHint: "Take a picture or drop an image here (JPG / PNG / HEIC)",
     takePhoto: "Take photo",
     chooseImage: "Choose image",
+    compressing: "Optimizing image…",
     retake: "Use another photo",
     translate: "Translate menu",
     langLabel: "Translate to",
@@ -110,6 +112,7 @@ export const STRINGS: Record<TargetLanguage, Strings> = {
     dropHint: "写真を撮るか、画像をここにドロップ（JPG / PNG / HEIC）",
     takePhoto: "写真を撮る",
     chooseImage: "画像を選ぶ",
+    compressing: "画像を最適化中…",
     retake: "別の写真を使う",
     translate: "メニューを翻訳",
     langLabel: "翻訳先",
